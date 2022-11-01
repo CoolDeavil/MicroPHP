@@ -15,6 +15,7 @@
 
         </div>
         <div class="col-6">
+            <h4>Demo User</h4>
             <div class="testUser" style="display: flex">
                 <div><i class="fa fa-user fa-3x"></i>&emsp;</div>
                 <ul style="list-style: none; padding: 0; margin: 0">

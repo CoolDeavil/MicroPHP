@@ -59,7 +59,9 @@
                 <hr>
                <div class="row">
                    <div class="input-group">
-                       <input type="text" class="form-control form-control-sm" name="captcha" placeholder="Are You Human? Type the text above" aria-label="inputGroupPrepend">
+                       <input type="text" class="form-control form-control-sm" name="captcha" placeholder="Are You Human? Type the text above"
+                              aria-label="inputGroupPrepend"
+                       value="{{$data['captcha']}}">
                        <div class="input-group-prepend captcha_">
                            <span class="input-group-text">
                                <i class="fas fa-refresh"></i>

@@ -41,7 +41,12 @@ class MRouter implements RouterInterface
     }
     public function add($method, $path, $callable, $name = null): bool|MRoute
     {
-        $route = new MRoute($path,$callable,$method,$name);
+        $route = $this->ioc->get(MRoute::class,[
+            'route' => $path,
+            'callable' => $callable,
+            'method' => $method,
+            'name' => $name,
+        ]);
         self::$routes[$method][] = $route;
         return $route;
     }
@@ -232,4 +237,5 @@ class MRouter implements RouterInterface
     {
         return self::$resourceRoutes;
     }
+
 }

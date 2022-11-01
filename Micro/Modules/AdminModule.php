@@ -53,6 +53,7 @@ class AdminModule extends Controller
 
     public function index(Request $request) : Response
     {
+        $cookie_name = 'rme';
         $viewData = [
             'pass' => '',
             'email' => '',
@@ -67,8 +68,8 @@ class AdminModule extends Controller
             $viewData['email'] = $data['old_data']['email'];
             $viewData['rme'] = $data['old_data']['rme'] ?? false;
         }
-        if($this->isCookieSet($request,'rme')){
-            $data = $this->getCookie($request,'rme');
+        if($this->isCookieSet($request,$cookie_name)){
+            $data = $this->getCookie($request,$cookie_name);
             $viewData['email']= AppCrypt::getInstance()->decrypt($data[0]);
             $viewData['pass'] = AppCrypt::getInstance()->decrypt($data[1]);
             $viewData['rme'] = true;
@@ -80,7 +81,7 @@ class AdminModule extends Controller
         $response->getBody()->write($view);
         return $response;
     }
-    public function show(Request $request, int $user) : Response
+    public function show(int $user) : Response
     {
         $userObj =  $this->repo->get($user);
         $view = $this->render->render('userProfile',['user' => $userObj]);
@@ -88,14 +89,14 @@ class AdminModule extends Controller
         $response->getBody()->write($view);
         return $response;
     }
-    public function resetCaptcha(Request $request) : Response
+    public function resetCaptcha() : Response
     {
         $captcha = CaptchaGen::generate();
         $response = new Response();
         $response->getBody()->write(json_encode(['image' => $captcha->image]));
         return $response;
     }
-    public function create(Request $request) : Response
+    public function create() : Response
     {
         $viewData = [
             'name' => '',
@@ -254,6 +255,8 @@ class AdminModule extends Controller
 
         $user_id = $this->repo->validate($user);
         if($user_id>0){
+
+            $cookie_name = 'rme';
             $repoUser = $this->repo->get($user_id);
             Session::authorize($repoUser);
             Session::set('FLASH_MESSAGE' , serialize([
@@ -266,9 +269,9 @@ class AdminModule extends Controller
                 $userMailCrypt = AppCrypt::getInstance()->crypt($request->getParsedBody()['email']);
                 $userPassCrypt = AppCrypt::getInstance()->crypt($request->getParsedBody()['pass']);
                 $cookie = "{$userMailCrypt}::{$userPassCrypt}";
-                $this->setCookie('rme',$cookie);
+                $this->setCookie($cookie_name,$cookie);
             }else {
-                setcookie('rme', '', time() - 3600, '/'); // Expired
+                setcookie($cookie_name, '', time() - 3600, '/'); // Expired
             };
             $this->repo->update($repoUser);
             return (new Response())

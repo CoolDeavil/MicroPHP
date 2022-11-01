@@ -6,7 +6,7 @@ use API\Core\Router\Route;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 
-Route::view('/','landing');
+//Route::view('/','landing');
 
 Route::view('/show-me-a-view','module2');
 
