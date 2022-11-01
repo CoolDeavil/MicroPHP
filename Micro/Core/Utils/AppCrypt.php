@@ -48,8 +48,7 @@ class AppCrypt
         // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
         $iv = substr(hash('sha256', $secret_iv), 0, 16);
         $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
-        $output = base64_encode($output);
-        return $output;
+        return base64_encode($output);
     }
     /**
      * @param $string
@@ -102,7 +101,7 @@ class AppCrypt
         Logger::log('Token '. $token);
         return $token;
     }
-    public static function hashFactory($dataToCrypt)
+    public static function hashFactory($dataToCrypt): string
     {
         $context = hash_init(APP_KEY_ALGORITHM, HASH_HMAC, APP_KEY);
         hash_update($context, $dataToCrypt);

@@ -31,7 +31,7 @@
 </div>
 </div>
 @section('navBar')
-{!!$navigation()!!}
+{!! $nav_bar !!}
 @show
 {!!  $flashMessage() !!}
 <div class="container appContent">

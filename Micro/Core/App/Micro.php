@@ -2,8 +2,10 @@
 
 namespace API\Core\App;
 
+use API\Core\Router\MRoute;
 use API\Core\Router\Route;
 use API\Core\Session\Session;
+use API\Core\Utils\NavBuilder\NavBuilder;
 use API\Interfaces\ContainerInterface;
 use API\Interfaces\RenderInterface;
 use API\Interfaces\RouterInterface;
@@ -19,21 +21,26 @@ class Micro
     protected Dispatcher $dispatch;
     protected RouterInterface $router;
     protected RenderInterface $render;
+    protected NavBuilder $builder;
 
     public function __construct(
         ContainerInterface $ioc,
         Dispatcher $dispatch,
         RouterInterface $router,
-        RenderInterface $render
+        RenderInterface $render,
+        NavBuilder $builder
     )
     {
         $this->ioc = $ioc;
         $this->dispatch = $dispatch;
         $this->router = $router;
         $this->render = $render;
+        $this->builder = $builder;
+
         Session::getInstance();
         $this->router->get('/registered-routes',[ $this, 'routeMapping'],'Micro.routes');
         $this->router->post('/api/switch-language',[ $this, 'switch'],'Micro.switchLanguage');
+
     }
     public function run(ServerRequestInterface $request): Response
     {
@@ -47,6 +54,11 @@ class Micro
         // Check for URL match.
         $match = $this->router->dispatch($request);
         if($match){
+            /**@var MRoute $matched */
+//            $matched = $this->router->getMatchedRoute();
+//            if($matched->getUrlMethod() === 'VIEW'){
+//                return $this->viewDispatch($matched);
+//            }
             $this->loadAppSettings();
             $pipe= $this->loadMiddleware($this->router->getMatchedRoute()->getMiddleware());
             $this->dispatch->loadPipeline($pipe);
@@ -56,6 +68,7 @@ class Micro
            $response->getBody()->write($this->render->render('err404',['uri' => $request->getUri()->getPath()]));
            return $response;
         }
+
     }
     public function switch(Request $request) : Response
     {
@@ -98,6 +111,14 @@ class Micro
         }
     }
 
+    private function viewDispatch(MRoute $rt) : Response
+    {
+        $this->loadAppSettings();
+        $response = new Response();
+        $view = $this->render->render($rt->getName());
+        $response->getBody()->write($view);
+        return $response;
+    }
     public function routeMapping(Request $request) : Response
     {
         $view = (string)$this->render->render('adminPanel',[
@@ -135,6 +156,12 @@ class Micro
             $this->render->addGlobal('app_lang', Session::get('ACTIVE_LANG'));
         } else {
             $this->render->addGlobal('app_lang', APP_LANG);
+        }
+        if(RENDER_NAV_BAR){
+            $nav = $this->builder->render();
+            $this->render->addGlobal('nav_bar', $nav);
+        } else {
+            $this->render->addGlobal('nav_bar', "<div class='appNavigation'></div>");
         }
         $this->render->addGlobal('cur_time',$this->footDate(Session::get('ACTIVE_LANG')));
     }

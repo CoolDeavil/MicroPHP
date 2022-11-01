@@ -12,9 +12,7 @@
 @section('content')
     <div class="sectionSeparator"></div>
     <div class="title">MicroPHP <small>Website Root</small></div>
-
-
-    <a href="{{$url('View.module2')}}">Route View</a>
+    <a href="{{$url('module2')}}">Route View</a>
     <br>
 
 @endsection

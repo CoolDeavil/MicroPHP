@@ -3,6 +3,7 @@
 namespace API\Middleware;
 
 use API\Core\App\DependencyLoader;
+use API\Core\Router\MRoute;
 use API\Interfaces\ContainerInterface;
 use API\Interfaces\RenderInterface;
 use API\Interfaces\RouterInterface;
@@ -28,8 +29,19 @@ class RequestMiddleware implements MiddlewareInterface
     }
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
+        /**@var MRoute $matched */
         $matched = $this->router->getMatchedRoute();
         if (!is_bool($matched)) {
+
+
+            if($matched->getUrlMethod() === 'VIEW'){
+                $response = new Response();
+                $view = $this->render->render($matched->getName());
+                $response->getBody()->write($view);
+                return $response;
+            }
+
+
 
             $callBack =  $this->depManager->loadDependencies(
                 $matched,

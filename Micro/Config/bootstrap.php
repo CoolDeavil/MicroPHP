@@ -22,6 +22,7 @@ use API\Middleware\MiddlewareOne;
 use API\Middleware\MiddlewareTree;
 use API\Middleware\MiddlewareTwo;
 use API\Middleware\RequestMiddleware;
+use API\Models\User;
 use API\Modules\AdminModule;
 use API\Modules\MicroModule;
 use API\Modules\ModuleAPI;
@@ -49,8 +50,12 @@ return [
             $ioc,
             $d,
             $router,
-            $render
+            $render,
+            new NavBuilder($render,$router, Translate::getInstance())
            );
+    },
+    User::class => function(){
+        return new User('','');
     },
     // Interfaces
     RouterInterface::class => function (ContainerInterface $ioc) {

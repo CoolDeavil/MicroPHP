@@ -65,13 +65,7 @@ class MRouter implements RouterInterface
     {
         /**@var BladeRender $render $ */
         $render = $this->ioc->get(\API\Interfaces\RenderInterface::class);
-        return self::add("VIEW", $url, function() use($view,$render) {
-            $view_render = $render->render($view);
-            $response = new Response();
-            $response->getBody()->write($view_render);
-            return $response;
-    },'View'.'.'.$view);
-
+        return self::add("VIEW", $url, function() {},$view);
     }
 
     public function dispatch(Request $request): bool
@@ -127,7 +121,7 @@ class MRouter implements RouterInterface
                 }
             }
         }
-        return '';
+        return '/';
     }
     public function replaceRouteParams($value): string
     {

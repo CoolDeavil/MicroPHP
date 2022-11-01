@@ -127,9 +127,8 @@ class AdminModule extends Controller
         $response = new Response();
         $response->getBody()->write($view);
         return $response;
-
     }
-    public function store(Request $request) : Response
+    public function store(Request $request, User $user, AppCrypt $cr) : Response
     {
         $this->check->init($request);
         $this->check->field('email')->rule('notEmpty');
@@ -141,8 +140,10 @@ class AdminModule extends Controller
 
         $validated = $this->check->validate();
         if ($validated) {
-            $newUserID = new User($request->getParsedBody()['email'], AppCrypt::hashFactory($request->getParsedBody()['pass']));
-            $newUserID->setName($request->getParsedBody()['name'])
+
+            $user->setEmail($request->getParsedBody()['email'])
+                ->setPass($cr::hashFactory($request->getParsedBody()['pass']))
+                ->setName($request->getParsedBody()['name'])
                 ->setCreated(time())
                 ->setLogged(time())
                 ->setEdited(time())
@@ -151,7 +152,7 @@ class AdminModule extends Controller
                 ->setAvatar('default_avatar.png')
                 ->setLang($request->getParsedBody()['language']);
 
-            $id = $this->repo->store($newUserID);
+            $id = $this->repo->store($user);
 
             $loggedUser = $this->repo->get($id);
             Session::set('FLASH_MESSAGE' , serialize([
@@ -175,7 +176,6 @@ class AdminModule extends Controller
                     'message' => 'You data contains invalid values...',
                 ]
             ];
-
             $location = $this->router->generateURI('AuthorService.create');
             return $this->handleResponse(
                 $request,
@@ -185,69 +185,6 @@ class AdminModule extends Controller
             );
 
         }
-
-//        if($this->validateDataEntry($request)){
-//
-//            $newUserID = new User($request->getParsedBody()['email'], AppCrypt::hashFactory($request->getParsedBody()['pass']));
-//            $newUserID->setName($request->getParsedBody()['name'])
-//                ->setCreated(time())
-//                ->setLogged(time())
-//                ->setEdited(time())
-//                ->setPass(AppCrypt::hashFactory($request->getParsedBody()['pass']))
-//                ->setAbout('')
-//                ->setAvatar('default_avatar.png')
-//                ->setLang($request->getParsedBody()['language']);
-//
-//            $id = $this->repo->store($newUserID);
-//
-//            $loggedUser = $this->repo->get($id);
-//            Session::set('FLASH_MESSAGE' , serialize([
-//                'type' => 'isSuccess',
-//                'title' => 'Registration Successful',
-//                'message' => 'Welcome <strong>'.$loggedUser->getName().'</strong>, Your Register was completed'
-//            ]));
-//            Session::authorize($loggedUser);
-//            return (new Response())
-//                ->withStatus(200)
-//                ->withHeader('Location', $this->router->generateURI('AuthorService.show', ['user'=>$loggedUser->getId()]));
-//
-//        } else {
-//            $result=false;
-//            $payload = [
-//                'old_data' => $request->getParsedBody(),
-//                'flash' => [
-//                    'type' => 'isError',
-//                    'title' => 'Validation Error',
-//                    'message' => 'You data contains invalid values...',
-//                ]
-//            ];
-//
-//            $location = $this->router->generateURI('AuthorService.create');
-//            return $this->handleResponse(
-//                $request,
-//                $result,
-//                $payload,
-//                $location
-//            );
-//
-//        }
-    }
-    private function validateDataEntry(Request $request) : bool
-    {
-        $human = unserialize(Session::get('captcha'));
-        if($request->getParsedBody()['captcha'] !== $human->text){
-            return false;
-        }
-        if($request->getParsedBody()['name'] == '' ){
-            return false;
-        }
-        if($request->getParsedBody()['email'] == '' ){
-            return false;
-        }
-        if($request->getParsedBody()['pass'] == '' ){
-            return false;
-        }
-        return true;
     }
     public function updateProfile(Request $request, int $user) : Response
     {
@@ -309,9 +246,12 @@ class AdminModule extends Controller
         setcookie($name, $data, time() + $expires, '/'); // 86400 = 1 day
 
     }
-    public function authorizeUser(Request $request) : Response
+    public function authorizeUser(Request $request, User $user, AppCrypt $cr) : Response
     {
-        $user = new User($request->getParsedBody()['email'],AppCrypt::hashFactory($request->getParsedBody()['pass']));
+
+        $user->setEmail($request->getParsedBody()['email'])
+            ->setPass($cr::hashFactory($request->getParsedBody()['pass']));
+
         $user_id = $this->repo->validate($user);
         if($user_id>0){
             $repoUser = $this->repo->get($user_id);
@@ -327,7 +267,9 @@ class AdminModule extends Controller
                 $userPassCrypt = AppCrypt::getInstance()->crypt($request->getParsedBody()['pass']);
                 $cookie = "{$userMailCrypt}::{$userPassCrypt}";
                 $this->setCookie('rme',$cookie);
-            }
+            }else {
+                setcookie('rme', '', time() - 3600, '/'); // Expired
+            };
             $this->repo->update($repoUser);
             return (new Response())
                 ->withStatus(200)

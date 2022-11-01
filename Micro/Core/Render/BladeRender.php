@@ -79,11 +79,6 @@ class BladeRender implements RenderInterface
                 }
                 return '';
             },
-            'navigation' => function() : string{
-                /**@var NavBuilder $builder */
-                $builder = MicroDI::getInstance([])->get(NavBuilder::class);
-                return $builder->render();
-            },
             'script' => function(string $label) : string{
                 return ScriptLoader::getInstance()->script($label);
             },
