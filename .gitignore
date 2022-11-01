@@ -1,0 +1,9 @@
+.idea
+node_modules/
+.vagrant/
+public/
+vendor/
+package-lock.json
+Micro/Views/Cached/
+composer.lock
+Vagrantfile

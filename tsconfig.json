@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "outDir": "./public/",
+      "noImplicitAny": true,
+      "module": "es6",
+      "target": "ESNext",
+      "allowJs": true,
+      "moduleResolution": "node",
+      "allowSyntheticDefaultImports": true,
+      "jsx": "react"
+    },
+    "files": [
+      "./assets/react/main.tsx"
+    ],
+    "include": [
+      "./assets/react/**/*"
+    ]
+  }

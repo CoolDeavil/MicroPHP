@@ -1,0 +1,342 @@
+@use "sass:math";
+
+@import "micro.vars";
+
+.appSideNavOverlay {
+  position: fixed;
+  display: none;
+
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0,0,0,.4);
+  z-index: 9;
+  visibility: hidden;
+
+  &.isShow {
+    visibility: visible;
+    display: block;
+  }
+
+  .appSideNav {
+    height: 100%;
+    min-width: $side_bar_width;
+    position: fixed;
+    z-index: 11;
+    top: 0;
+    left: -$side_bar_width;
+    background-color: rgba(0, 0, 0, 0.9);
+    overflow-x: hidden;
+    padding-top: calc(#{$navigation_height + 1});
+
+
+    -webkit-box-shadow: 5px 0 5px -2px rgba(136,136,136,.4);
+    box-shadow: 5px 0 5px -2px rgba(136,136,136,.4);
+
+    -webkit-transition: left 1s ease;
+    -moz-transition: left 1s ease ;
+    -o-transition: left 1s ease ;
+    transition: left 1s ease ;
+
+    a {
+      padding: 6px 8px 6px 16px;
+      text-decoration: none;
+      font-size: 1rem;
+      color: $nav_link_text_color;
+      display: block;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      outline: none;
+      .fas {
+        color: $nav_link_icon_color;
+      }
+      &.active {
+        color: $nav_link_text_hover_color;
+        .fas {
+          color: $nav_link_icon_hover_color;
+        }
+      }
+      &:hover {
+        color: $nav_link_text_hover_color;
+        .fas {
+          color: $nav_link_icon_hover_color;
+        }
+      }
+    }
+    &.showNav {
+      transform: translateX($side_bar_width);
+    }
+
+    &.showNavAnim {
+      -webkit-animation: showSideNav 500ms both ease-in;
+    }
+  }
+}
+.appHero {
+  top: 0;
+  height: $hero_height;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  transition: height .3s ease-in-out;
+  display: block;
+  background-color: $hero_background;
+}
+.appNavigation {
+  height: $navigation_height;
+  line-height: $navigation_height;
+  background-color: $navigation_background;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+
+  transition: background-color ease .3s;
+  -webkit-transition: background-color ease .3s;
+  -moz-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.6);
+  -webkit-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.6);
+
+  z-index: 10;
+
+  &.isSticky {
+    position: fixed;
+    background-color: $navigation_background_sticky;
+    top: 0;
+    width: 100%;
+
+    + .appContent {
+      margin-top: $content_margin_top + $navigation_height;
+    }
+  }
+}
+.sectionSeparator{
+  height: 50px;
+  background-color: transparent;
+}
+.appContent {
+  margin-top: $content_margin_top;
+  padding-top: $content_padding_top;
+  min-height: calc(100vh - #{$navigation_height + $app_footer_height + $content_margin_top + $hero_height });
+}
+.appFooter {
+  height: $app_footer_height;
+  line-height:$app_footer_height;
+  vertical-align: center;
+  text-align: center;
+  background-color: $app_footer_background;
+  span {
+    font-size: 1rem;
+    font-weight: bolder;
+    color: $app_footer_text_color;
+  }
+}
+.cFab {
+  width: 50px;
+  height: 50px;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+  box-shadow: 0 6px 10px 0 #666;
+  transition: all 0.1s ease-in-out;
+  opacity: 0;
+  display: none;
+
+  font-size: 20px;
+  color: #000000;
+  text-align: center;
+  line-height: 50px;
+
+  position: fixed;
+  right: 5%;
+  bottom: 350px;
+  z-index: 10;
+
+  &.isShow {
+    display: block;
+    opacity: 1;
+  }
+  &.pressed {
+    box-shadow: none;
+  }
+  &.pressed:hover {
+    box-shadow: none;
+  }
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 6px 14px 0 #666;
+    background-color: #8bd632;
+    color: #FFFFFF;
+    transform: scale(1.05);
+  }
+}
+
+
+@-webkit-keyframes showFab {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes showFab {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes hideFab {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes hideFab {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes showSideNav {
+  0% {
+    left:  -$side_bar_width;
+  }
+  100% {
+    left: 0;
+  }
+}
+@keyframes showSideNav {
+  0% {
+    left:  -$side_bar_width;
+  }
+  100% {
+    left: 0;
+  }
+}
+@-webkit-keyframes hideSideNav {
+  0% {
+    left: 0;
+  }
+  100% {
+    left:  -$side_bar_width;
+  }
+}
+@keyframes hideSideNav {
+  0% {
+    left: 0;
+  }
+  100% {
+    left:  -$side_bar_width;
+  }
+}
+
+@import "hero";
+
+@media screen and (max-width: 575px) {
+  body:before {
+    content: "mobile_xs";
+    display: none;
+  }
+  .appHero {
+    display: none;
+    opacity: 0;
+  }
+  .appContent {
+    margin-top: $content_margin_top;
+    padding-top: $content_padding_top;
+    min-height: calc(
+            100vh - #{$navigation_height + $app_footer_height + $content_margin_top}
+    );
+  }
+
+}
+@media screen and (min-width: 576px) {
+  body:before {
+    content: "mobile";
+    display: none;
+  }
+  .appHero {
+    display: none;
+    opacity: 0;
+  }
+  .appContent {
+    margin-top: $content_margin_top;
+    padding-top: $content_padding_top;
+    min-height: calc(
+            100vh - #{$navigation_height + $app_footer_height + $content_margin_top}
+    );
+  }
+
+
+}
+@media screen and (min-width: 768px) {
+  body:before {
+    content: "tablet";
+    display: none;
+  }
+  .appHero {
+    height: math.div($hero_height, 2);
+    display: block;
+    opacity: 1;
+  }
+  .appContent {
+    min-height: calc(
+            100vh - #{$navigation_height + $app_footer_height +
+        math.div($hero_height, 2)+ $content_margin_top}
+    );
+  }
+}
+@media screen and (min-width: 992px) {
+  body:before {
+    content: "desktop";
+    display: none;
+  }
+  .appHero {
+    height: $hero_height;
+    .logo {
+      background-size: 300px 300px;
+      width: 300px;
+      height: 300px;
+      top: 2%;
+    }
+  }
+  .appContent {
+    min-height: calc(
+            100vh - #{$navigation_height + $app_footer_height + $hero_height +
+        $content_margin_top}
+    );
+  }
+}
+.presentation {
+  font-size: 1.1rem;
+  font-weight: bold;
+  &::first-letter {
+    font-size: 2rem;
+    color: orangered;
+  }
+}
+
+
+
+@media screen and (min-width: 1200px) {
+  body:before {
+    content: "desktop_lg";
+    display: none;
+  }
+}
+
+
+
+@import "navigation";

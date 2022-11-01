@@ -1,0 +1,37 @@
+
+table {
+  padding: 20px;
+  margin: 5px 5px 5px 5px ;
+  width: 100%;
+  thead {
+    font-size: 1rem;
+    font-weight: bolder;
+    background-color: #75a478;
+    color: white;
+    padding: 5px;
+  }
+  tr {
+    td {
+      &.lastLog {
+          background-color: #d7ffd9;
+          color: black;
+          padding: 10px;
+
+      }
+      &.LastEdit {
+          background-color: #a5d6a7;
+          color: black;
+          padding: 10px;
+      }
+      &.created {
+          background-color: #75a478;
+          color: black;
+          padding: 10px;
+      }
+    }
+  }
+}
+
+input[name=name],input[name=email], {
+  pointer-events: none;
+}
