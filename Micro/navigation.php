@@ -12,23 +12,11 @@ $user_avatar ='images/default_avatar.png';
 
 
 $nav->link('MICRO1', 'MicroModule.index', 'fa-home');
-$nav->link('MICRO1', 'Micro.routes', 'fa-road');
-$nav->link('MICRO1', 'TestOne.index', 'fa-star');
-
-//$nav->link('MICRO1', 'MicroModule.loggedUsers', 'fa-key');
+$nav->link('MICRO2', 'Micro.routes', 'fa-road');
+$nav->link('MICRO3', 'AuthorService.listRegisteredUsers', 'fa-key');
 //$nav->link('MICRO1', 'TestOne.index', 'fa-star');
-//
 
 
-//$nav->link('MICRO1', 'TestOne.index', 'fa-university');
-//$nav->link('MICRO1', 'TestTwo.index', 'fa-university');
-//$nav->link('MICRO1', 'TestTree.index', 'fa-university');
-
-//$nav->link('OPTION3', 'ModuleOne.index2', 'fa-home');
-//$nav->link('OPTION2', '/foo', 'fa-home');
-//$nav->link('OPTION3', '/bar', 'fa-home');
-//
-//
 //$nav->drop('DROPDOWN')
 //    ->entry('OPTION1', 'ModuleOne.index','fa-desktop')
 //    ->entry('OPTION2', 'ModuleOne.index1','fa-desktop')

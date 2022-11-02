@@ -5,7 +5,7 @@ const plugIns = require('./build/webpack.plugins.js');
 const rules = require('./build/webpack.rules.js');
 const optimize = require('./build/webpack.optimize.js');
 
-const FULL_HASH = true;
+const FULL_HASH = false;
 
 let config = {
     entry: entries.baseCode(),

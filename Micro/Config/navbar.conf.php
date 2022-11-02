@@ -2,7 +2,7 @@
 
 
 const RENDER_NAV_BAR = true;
-const TRANSLATE = false;
+const TRANSLATE = true;
 const MULTI_LANGUAGE = true;
 const NAV_MENU = 'navigation.php';
 const AVATAR_IMG = 'default_avatar.png';

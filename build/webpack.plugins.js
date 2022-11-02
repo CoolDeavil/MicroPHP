@@ -4,6 +4,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require('copy-webpack-plugin');
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 exports.buildPlugs = (mode) => {
     let filename_ = '';
@@ -27,6 +28,31 @@ exports.buildPlugs = (mode) => {
             templateContent: ({htmlWebpackPlugin}) => `${htmlWebpackPlugin.files.js.map(file => `${file}`, )}`
         }),
 
+        new BrowserSyncPlugin({
+                proxy: 'http://localhost:2000',
+                host: 'localhost:2000',
+                port: 3000,
+                open: false,
+                files: [
+                    {
+                        match: [
+                            '**/*.php',
+                            '**/*.twig',
+                        ],
+                        // eslint-disable-next-line no-unused-vars
+                        fn: function(event, file) {
+                            if (event === "change") {
+                                const bs = require('browser-sync').get('bs-webpack-plugin');
+                                bs.reload();
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                reload: true,
+                //reload: false
+            }),
 
         new CopyPlugin({
             patterns:[

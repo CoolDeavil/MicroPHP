@@ -2,7 +2,6 @@
 
 namespace API\Core\App;
 
-use API\Core\Router\MRoute;
 use API\Core\Router\Route;
 use API\Core\Session\Session;
 use API\Core\Utils\NavBuilder\NavBuilder;
@@ -38,8 +37,12 @@ class Micro
         $this->builder = $builder;
 
         Session::getInstance();
+
         $this->router->get('/registered-routes',[ $this, 'routeMapping'],'Micro.routes');
         $this->router->post('/api/switch-language',[ $this, 'switch'],'Micro.switchLanguage');
+
+
+
 
     }
     public function run(ServerRequestInterface $request): Response
@@ -54,11 +57,6 @@ class Micro
         // Check for URL match.
         $match = $this->router->dispatch($request);
         if($match){
-            /**@var MRoute $matched */
-//            $matched = $this->router->getMatchedRoute();
-//            if($matched->getUrlMethod() === 'VIEW'){
-//                return $this->viewDispatch($matched);
-//            }
             $this->loadAppSettings();
             $pipe= $this->loadMiddleware($this->router->getMatchedRoute()->getMiddleware());
             $this->dispatch->loadPipeline($pipe);
@@ -79,6 +77,8 @@ class Micro
         ];
         Session::set('ACTIVE_LANG', $request->getParsedBody()['language']);
         Session::set('LOCALE', $locales[$request->getParsedBody()['language']]);
+
+//        Logger::log('App Language set to: ' .$request->getParsedBody()['language'] );
         return (new Response())
             ->withStatus(200)
             ->withHeader('Location', Session::get('LAST_INTENT'));
@@ -109,15 +109,6 @@ class Micro
         foreach ($modulePipe as $module) {
             $this->ioc->get($module, $params);
         }
-    }
-
-    private function viewDispatch(MRoute $rt) : Response
-    {
-        $this->loadAppSettings();
-        $response = new Response();
-        $view = $this->render->render($rt->getName());
-        $response->getBody()->write($view);
-        return $response;
     }
     public function routeMapping(Request $request) : Response
     {
@@ -177,9 +168,10 @@ class Micro
     }
     private function checkAllowedCORS(){
         if (isset($_SERVER['HTTP_ORIGIN'])) {
-            $allowed = [
-                'http://localhost:8000'
-            ];
+//            $allowed = [
+//                'http://localhost:8000'
+//            ];
+            $allowed = include_once ALLOWED_CORS_FILE;
             array_unshift($allowed,"http://$_SERVER[HTTP_HOST]");
             if( !in_array($_SERVER['HTTP_ORIGIN'], $allowed) ) {
                 exit(0);

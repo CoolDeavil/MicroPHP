@@ -1,7 +1,7 @@
 import MicroUI from "./Classes/microUI";
 
 export function main(){
- console.log('Assets Bundled by Webpack!... ');
+ console.log('DevServer:3000 - MicroPHP v0.0.1');
 
     let elements: any = [
         // {target: 'back', speed: '*(-1.5)'},

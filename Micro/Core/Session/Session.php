@@ -1,6 +1,7 @@
 <?php
 namespace API\Core\Session;
 
+use API\Core\Utils\Translate;
 use API\Interfaces\SessionInterface;
 use API\Core\Utils\Logger;
 use API\Models\User;
@@ -38,7 +39,6 @@ class Session implements SessionInterface
             };
             self::set('ACTIVE_LANG', $active_browser_language);
             self::set('LOCALE', $active_browser_locale);
-
             self::set('ANONYMOUS', true );
             Logger::log(sprintf('[@] SESSION STARTED: Lang [ %s ] at [ %s ]', self::get('ACTIVE_LANG'), time()));
         }

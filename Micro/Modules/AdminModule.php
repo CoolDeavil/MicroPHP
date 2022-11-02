@@ -49,6 +49,9 @@ class AdminModule extends Controller
             ->urlIdentifier('user',INTEGER)
             ->middleware([AdminMiddleware::class]);
 
+        $this->router->get('/registered-users',[$this,'listRegisteredUsers'],'AuthorService.listRegisteredUsers')
+        ->middleware([AdminMiddleware::class]);
+
     }
 
     public function index(Request $request) : Response

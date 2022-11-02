@@ -4,7 +4,7 @@
   "description": "front end asset bundler",
   "scripts": {
     "web": "lite-server",
-    "dev": "webpack serve --mode=development --open",
+    "dev": "webpack serve --mode=development --open --hot",
     "build": "webpack --mode=development",
     "release": "webpack --mode=production",
     "php": "php -S localhost:2000 -d display_errors=1 -t public/"
@@ -27,6 +27,8 @@
     "autoprefixer": "^10.3.7",
     "babel-loader": "^9.0.1",
     "bootstrap-css-only": "^4.4.1",
+    "browser-sync": "^2.27.10",
+    "browser-sync-webpack-plugin": "^2.3.0",
     "css-loader": "^6.4.0",
     "css-minimizer-webpack-plugin": "^4.0.0",
     "cssnano": "^5.1.14",

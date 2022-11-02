@@ -126,7 +126,7 @@ class MRouter implements RouterInterface
                 }
             }
         }
-        return '/';
+        return '#';
     }
     public function replaceRouteParams($value): string
     {

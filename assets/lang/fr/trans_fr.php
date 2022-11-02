@@ -5,14 +5,21 @@
  * Date: 21/03/2018
  * Time: 13:45
  */
-$appText = [
+return [
 
 
-    'MICRO1' => "Home",
+    'MICRO1' => "Maison",
+    'MICRO2' => "Route",
+    'MICRO3' => "utilisateurs",
 
-    'EMAIL_BAD_STRUCTURE' => "Email syntax is wrong",
-    'CANT_BE_EMPTY' => "Cannot be be empty",
-    'CAPTCHA_NO_MATCH' => "Captcha is wrong",
+    'EMAIL_BAD_STRUCTURE' => "La syntaxe de l'e-mail est incorrecte",
+    'CANT_BE_EMPTY' => "Ne peut pas être vide",
+    'CAPTCHA_NO_MATCH' => "Le capcha est faux",
+
+    'LOG_IN' => "S'identifier",
+    'REGISTER' => "registre",
+    'DASHBOARD' => "Profil",
+    'LOG_OUT' => "Connectez Out",
 
 
     ## Dates

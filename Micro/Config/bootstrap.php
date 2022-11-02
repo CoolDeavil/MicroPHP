@@ -51,7 +51,7 @@ return [
             $d,
             $router,
             $render,
-            new NavBuilder($render,$router, Translate::getInstance())
+            new NavBuilder($render,$router, new Translate())
            );
     },
     User::class => function(){
@@ -150,8 +150,9 @@ return [
     },
 
     Translate::class => function () {
-        return Translate::getInstance();
+        return new Translate();
     },
+
     NavBuilder::class => function (ContainerInterface $ioc) {
         $router = $ioc->get(RouterInterface::class);
         $render = $ioc->get(RenderInterface::class);

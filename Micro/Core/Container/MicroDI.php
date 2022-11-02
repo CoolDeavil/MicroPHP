@@ -6,6 +6,7 @@ namespace API\Core\Container;
 use API\Core\Router\MRoute;
 use API\Core\Router\RBuilder;
 use API\Core\Utils\Logger;
+use API\Core\Utils\Translate;
 use API\Interfaces\ContainerInterface;
 
 class MicroDI implements ContainerInterface

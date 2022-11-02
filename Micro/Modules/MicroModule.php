@@ -26,23 +26,12 @@ class MicroModule extends Controller
         $this->router->get('/',[$this,'index'],'MicroModule.index');
         $this->router->get('/json',[$this,'json']);
         $this->router->get('/async-task',[$this,'initiateTask'],'MicroModule.initiateTask');
-
-        $this->router->get('/only-logged-users',[$this,'loggedUsers'],'MicroModule.loggedUsers')
-        ->middleware([AdminMiddleware::class]);
     }
     public function index() : Response
     {
         $response = new Response();
         $view = $this->render->render('landing');
         $response->getBody()->write($view);
-        return $response;
-    }
-    public function loggedUsers(Request $request) : Response
-    {
-        $response = new Response();
-        $view = $this->render->render('loggedUsers');
-        $response->getBody()->write($view);
-
         return $response;
     }
     public function json() : Response
