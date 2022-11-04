@@ -83,6 +83,17 @@ class MRoute
         unset($this->vars);
         return true;
     }
+
+    /**
+     * @param mixed $callable
+     * @return MRoute
+     */
+    public function setCallable(mixed $callable): MRoute
+    {
+        $this->callable = $callable;
+        return $this;
+    }
+
     private function validate($match){
         $this->vars[] = $match[1];
         if(isset($this->params[$match[1]])){

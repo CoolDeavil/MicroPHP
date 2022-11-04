@@ -2,6 +2,7 @@
 
 namespace API\Core\App;
 
+use API\Core\Router\MRoute;
 use API\Core\Router\Route;
 use API\Core\Session\Session;
 use API\Core\Utils\NavBuilder\NavBuilder;
@@ -41,9 +42,6 @@ class Micro
         $this->router->get('/registered-routes',[ $this, 'routeMapping'],'Micro.routes');
         $this->router->post('/api/switch-language',[ $this, 'switch'],'Micro.switchLanguage');
 
-
-
-
     }
     public function run(ServerRequestInterface $request): Response
     {
@@ -57,8 +55,12 @@ class Micro
         // Check for URL match.
         $match = $this->router->dispatch($request);
         if($match){
+
+            $matched = $this->router->getMatchedRoute();
+            $matched->setCallable($this->compileCallable($matched));
+
             $this->loadAppSettings();
-            $pipe= $this->loadMiddleware($this->router->getMatchedRoute()->getMiddleware());
+            $pipe= $this->loadMiddleware($matched->getMiddleware());
             $this->dispatch->loadPipeline($pipe);
             return $this->dispatch->run($request);
         }else{
@@ -77,8 +79,6 @@ class Micro
         ];
         Session::set('ACTIVE_LANG', $request->getParsedBody()['language']);
         Session::set('LOCALE', $locales[$request->getParsedBody()['language']]);
-
-//        Logger::log('App Language set to: ' .$request->getParsedBody()['language'] );
         return (new Response())
             ->withStatus(200)
             ->withHeader('Location', Session::get('LAST_INTENT'));
@@ -90,11 +90,15 @@ class Micro
             $middlewarePipe,
             $routeMiddleware
         ),SORT_REGULAR);
-        $pipeline[] = RequestMiddleware::class;
+        $params = [
+            'router' => $this->router,
+            'render' => $this->render,
+        ];
         $compiled = [];
         foreach ($pipeline as $middleware){
             $compiled[] = $this->ioc->get($middleware);
         }
+        $compiled[] = $this->ioc->get(RequestMiddleware::class,$params);;
         unset($middlewarePipe);
         unset($pipeline);
         return ($compiled);
@@ -168,9 +172,6 @@ class Micro
     }
     private function checkAllowedCORS(){
         if (isset($_SERVER['HTTP_ORIGIN'])) {
-//            $allowed = [
-//                'http://localhost:8000'
-//            ];
             $allowed = include_once ALLOWED_CORS_FILE;
             array_unshift($allowed,"http://$_SERVER[HTTP_HOST]");
             if( !in_array($_SERVER['HTTP_ORIGIN'], $allowed) ) {
@@ -198,6 +199,43 @@ class Micro
         $this->lodModulePipe();
         $this->router->buildResourceRoutes();
         return $this->router::getAllRoutes();
+    }
+    private function compileCallable(MRoute $matched) :  array|callable
+    {
+        $callable = $matched->getCallable();
+        $params = [
+            'router'=>$this->router,
+            'render'=>$this->render,
+        ];
+        if(is_string($callable)) {
+            if(!preg_match("#@#",$callable)){
+                dump('BAD ROUTE NAME ');
+                die(0);
+            }
+            $parts = explode('@', $callable);
+            return [
+                $this->ioc->get($parts[0],$params),
+                $parts[1]
+            ];
+        } elseif (is_array($callable)){
+            switch (gettype($callable[0])){
+                case 'string':
+                    return [
+                        $this->ioc->get($callable[0],$params),
+                        $callable[1]
+                    ];
+                case 'object':
+                    return [
+                        $callable[0],
+                        $callable[1]
+                    ];
+            }
+            die('alien on routes file');
+        }
+        elseif (is_object($callable)){
+            return $callable;
+        }
+        return [];
     }
 
 }

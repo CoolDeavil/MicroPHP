@@ -59,26 +59,23 @@ return [
     },
     // Interfaces
     RouterInterface::class => function (ContainerInterface $ioc) {
-        return MRouter::getInstance($ioc);
+        return MRouter::getInstance();
     },
     RenderInterface::class => function (ContainerInterface $ioc) {
         return new BladeRender($ioc);
     },
     // Framework Classes
-    MRoute::class => function($args){
-        extract($args);
-        /** @var $route */
-        /** @var $callable */
-        /** @var $method */
-        /** @var $name */
-        return new MRoute($route, $callable, $method, $name);
-    },
-    RBuilder::class => function($args, ContainerInterface $ioc) {
-        extract($args);
-        /** @var $serviceName */
-//        return new RBuilder($serviceName, $ioc->get('AuthorService'));
-        return new RBuilder($serviceName, $ioc->get('ResourceRoutes'));
-    },
+//    MRoute::class => function($args){
+//        extract($args);
+//        /** @var $route */
+//        /** @var $callable */
+//        /** @var $method */
+//        /** @var $name */
+//        return new MRoute($route, $callable, $method, $name);
+//    },
+//    RBuilder::class => function() {
+//        return new RBuilder();
+//    },
     'ResourceRoutes' => function(){
         return [
             'GET' => [
@@ -170,6 +167,12 @@ return [
         /** @var $render RenderInterface */
         return new MicroModule($router,$render);
     },
+    'MicroModule' => function( $args,ContainerInterface $ioc) {
+        extract($args);
+        /** @var $router RouterInterface */
+        /** @var $render RenderInterface */
+        return new MicroModule($router,$render);
+    },
     ModuleAPI::class => function( $args,ContainerInterface $ioc) {
         extract($args);
         /** @var $router RouterInterface */
@@ -202,12 +205,17 @@ return [
     LastIntent::class => function(ContainerInterface $ioc) {
         return new LastIntent([]);
     },
-    RequestMiddleware::class => function(ContainerInterface $ioc) {
+    RequestMiddleware::class => function($args,ContainerInterface $ioc) {
+//        /**@var RouterInterface $router */
+//        $router = $ioc->get(RouterInterface::class);
+//        /** @var $render RenderInterface */
+//        $render = $ioc->get(RenderInterface::class);
 
-        /**@var RouterInterface $router */
-        $router = $ioc->get(RouterInterface::class);
-        /**@var RenderInterface $render */
-        $render = $ioc->get(RenderInterface::class);
+        extract($args);
+        /** @var $router RouterInterface */
+        /** @var $render RenderInterface */
+
+
         return new RequestMiddleware(
             $router,
             $render,

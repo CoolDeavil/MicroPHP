@@ -6,9 +6,8 @@ use API\Core\Router\Route;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 
-//Route::view('/','landing');
+Route::get('/','MicroModule@index','MicroModule.index');
 
-Route::view('/show-me-a-view','module2');
 
 Route::get('/version',function() use($ioc) : Response {
     $ver = $ioc->get('VERSION');
@@ -26,5 +25,4 @@ Route::get('/fooBarAndZoo/:animal',function(Request $request, string $animal) : 
     return $response;
 },'facadeTrials3762')
 ->with('animal',LETTERS);
-
 

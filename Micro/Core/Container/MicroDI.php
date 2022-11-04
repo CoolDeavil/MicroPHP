@@ -5,8 +5,6 @@ namespace API\Core\Container;
 
 use API\Core\Router\MRoute;
 use API\Core\Router\RBuilder;
-use API\Core\Utils\Logger;
-use API\Core\Utils\Translate;
 use API\Interfaces\ContainerInterface;
 
 class MicroDI implements ContainerInterface
@@ -39,11 +37,11 @@ class MicroDI implements ContainerInterface
         if (!$this->has($id)) {
             die("[MicroDI] No entry or class found for '$id'");
         }
-        if(!in_array($id,$this->singleton)){
-            if (array_key_exists($id, $this->resolvedServices)) {
-                return $this->resolvedServices[$id];
-            }
-        }
+//        if(!in_array($id,$this->singleton)){
+//            if (array_key_exists($id, $this->resolvedServices)) {
+//                return $this->resolvedServices[$id];
+//            }
+//        }
         $callBackFunc = $this->register[$id];
         if ($callBackFunc instanceof \Closure) {
             if ($params) {

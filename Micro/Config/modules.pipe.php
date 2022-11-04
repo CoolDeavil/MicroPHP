@@ -9,6 +9,6 @@ use API\Modules\TestOne;
 return [
     MicroModule::class,
     AdminModule::class,
-//    TestOne::class,
-//    ModuleAPI::class,
+    TestOne::class,
+    ModuleAPI::class,
 ];

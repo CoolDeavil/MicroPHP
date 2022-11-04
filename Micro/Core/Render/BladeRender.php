@@ -7,6 +7,7 @@ namespace API\Core\Render;
 use API\Core\Container\MicroDI;
 use API\Core\Router\MRouter;
 use API\Core\Session\Session;
+use API\Core\Utils\Logger;
 use API\Core\Utils\NavBuilder\NavBuilder;
 use API\Core\Utils\ScriptLoader;
 use API\Interfaces\ContainerInterface;
@@ -26,6 +27,8 @@ class BladeRender implements RenderInterface
         $this->blade = new Blade(APP_VIEWS, APP_VIEWS.DIRECTORY_SEPARATOR.'cached');
         $this->loadHelpers();
         $this->ioc = $ioc;
+
+        Logger::log('BladeRender __construct');
     }
     public function addPath(string $path): void
     {

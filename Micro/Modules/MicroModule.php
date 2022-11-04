@@ -23,7 +23,7 @@ class MicroModule extends Controller
         $this->router = $router;
         $this->render = $render;
 
-        $this->router->get('/',[$this,'index'],'MicroModule.index');
+//        $this->router->get('/',[$this,'index'],'MicroModule.index');
         $this->router->get('/json',[$this,'json']);
         $this->router->get('/async-task',[$this,'initiateTask'],'MicroModule.initiateTask');
     }

@@ -11,10 +11,7 @@ class Translate
 
     public static function translate(string $key): string
     {
-
-
         $activeLang = Session::get('ACTIVE_LANG');
-        Logger::log('Translator @@ ' . $activeLang);
         $translateKeys = include LANGUAGE_FOLDER.$activeLang.'/trans_'.$activeLang.'.php';;
         if(isset($translateKeys[$key])){
             return $translateKeys[$key];

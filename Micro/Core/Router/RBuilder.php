@@ -17,10 +17,10 @@ class RBuilder
     public array $serviceRoutes = [];
     private string $identifier;
 
-    public function __construct(string $serviceName, $serviceRoutes)
+    public function __construct()
     {
-        $this->serviceRoutes = $serviceRoutes;
-        $this->serviceName = $serviceName;
+        $this->serviceRoutes = [];
+        $this->serviceName = '';
         $this->identifier = 'id';
         $this->middleware = [];
         $this->routeRegex = MIXED;
@@ -91,5 +91,19 @@ class RBuilder
            }
            $rt->middleware($this->middleware);
        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getServiceName(): string
+    {
+        return $this->serviceName;
+    }
+
+    public function setServiceName(string $serviceName): static
+    {
+        $this->serviceName = $serviceName;
+        return $this;
     }
 }

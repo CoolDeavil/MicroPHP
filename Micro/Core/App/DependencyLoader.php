@@ -5,9 +5,7 @@ namespace API\Core\App;
 
 
 use API\Core\Router\MRoute;
-use API\Core\Utils\Logger;
 use API\Interfaces\ContainerInterface;
-use GuzzleHttp\Psr7\Request;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
@@ -20,12 +18,12 @@ class DependencyLoader
     {
         $this->ioc = $ioc;
     }
-    public function loadDependencies(MRoute $matched, Request $request): array
+    public function loadDependencies(MRoute $matched): array
     {
         if(gettype($matched->getCallable()) === 'object'){
             $params = $this->getFunctionParams($matched->getCallable());
             $typeCastList = $this->parseParams($params);
-            $callParams = $this->bootParameters($typeCastList,$matched->getParams());
+            $callParams = $this->callParameters($typeCastList,$matched->getParams());
             if($callParams === null) {
                 $callParams = [];
             }
@@ -39,7 +37,7 @@ class DependencyLoader
                 $matched->getCallable()[1]
             );
             $typeCastList = $this->parseParams($params);
-            $callParams = $this->bootParameters($typeCastList,$matched->getParams());
+            $callParams = $this->callParameters($typeCastList,$matched->getParams());
             if($callParams === null) {
                 $callParams = [];
             }
@@ -50,7 +48,7 @@ class DependencyLoader
         }
         return $Callable;
     }
-    private function bootParameters($typeCastList,$callableParams)
+    private function callParameters($typeCastList, $callableParams)
     {
         $callbackParams=null;
         for($p=0;$p<count($typeCastList);$p++){
@@ -110,5 +108,4 @@ class DependencyLoader
             default => $value,
         };
     }
-
 }

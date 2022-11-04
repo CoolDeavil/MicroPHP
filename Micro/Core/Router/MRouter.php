@@ -16,15 +16,15 @@ class MRouter implements RouterInterface
     private static string $method = 'GET';
     public static array $routes = [];
     public static array $resourceRoutes = [];
-    private ContainerInterface $ioc;
+    protected RBuilder $builder;
 
-    private function __construct(ContainerInterface $ioc){
-        $this->ioc = $ioc;
+    private function __construct(){
+
     }
-    public static function getInstance($ioc): ?MRouter
+    public static function getInstance(): ?MRouter
     {
         if (!self::$instance) {
-            self::$instance = new self($ioc);
+            self::$instance = new self();
         }
         return self::$instance;
     }
@@ -34,19 +34,14 @@ class MRouter implements RouterInterface
     }
     public function resourceRoute(string $serviceName) : RBuilder
     {
-        $resource = $this->ioc->get(RBuilder::class,['serviceName' => $serviceName]);
+        $resource = new RBuilder();
+        $resource->setServiceName($serviceName);
         self::$resourceRoutes[] = $resource;
         return $resource;
-
     }
     public function add($method, $path, $callable, $name = null): bool|MRoute
     {
-        $route = $this->ioc->get(MRoute::class,[
-            'route' => $path,
-            'callable' => $callable,
-            'method' => $method,
-            'name' => $name,
-        ]);
+        $route = new MRoute($path,$callable,$method,$name);
         self::$routes[$method][] = $route;
         return $route;
     }
@@ -68,8 +63,6 @@ class MRouter implements RouterInterface
     }
     public function view(string $url, string $view): MRoute|bool
     {
-        /**@var BladeRender $render $ */
-        $render = $this->ioc->get(\API\Interfaces\RenderInterface::class);
         return self::add("VIEW", $url, function() {},$view);
     }
 
@@ -156,39 +149,6 @@ class MRouter implements RouterInterface
         }
         return false;
     }
-    public function getExecutable(MRoute $matched) :  array|callable
-    {
-        $callable = $matched->getCallable();
-        if(is_string($callable)) {
-            if(!preg_match("#@#",$callable)){
-                dump('BAD ROUTE NAME ');
-                die(0);
-            }
-            $parts = explode('@', $callable);
-            return [
-                $this->ioc->get($parts[0]),
-                $parts[1]
-            ];
-        } elseif (is_array($callable)){
-            switch (gettype($callable[0])){
-                case 'string':
-                    return [
-                        $this->ioc->get($callable[0]),
-                        $callable[1]
-                    ];
-                case 'object':
-                    return [
-                        $callable[0],
-                        $callable[1]
-                    ];
-            }
-            die;
-        }
-        elseif (is_object($callable)){
-            return $callable;
-        }
-        return [];
-    }
     public static function getAllRoutes() : array
     {
         $methods = array_keys(self::$routes);
@@ -227,7 +187,6 @@ class MRouter implements RouterInterface
 
         return $request;
     }
-
 
     public static function debug(): array
     {
